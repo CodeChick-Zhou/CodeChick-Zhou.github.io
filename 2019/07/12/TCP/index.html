@@ -8,16 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>关于TCP5层协议的一些基础知识 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="true">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="关于TCP5层协议的一些基础知识">
 <meta property="og:url" content="http://yoursite.com/2019/07/12/TCP/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png">
-<meta property="og:image" content="http://yoursite.com/assets/IP.png">
-<meta property="og:updated_time" content="2019-07-15T12:52:06.759Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/IP.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/UDP.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/TCP.png">
+<meta property="og:updated_time" content="2019-07-15T17:38:03.566Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于TCP5层协议的一些基础知识">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
@@ -52,7 +53,7 @@
 			<img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/cat.jpg" class="js-avatar">
 		</a>
 		<hgroup>
-		  <h1 class="header-author"><a href="/">John Doe</a></h1>
+		  <h1 class="header-author"><a href="/">CodeChick</a></h1>
 		</hgroup>
 		
 
@@ -100,7 +101,7 @@
 				<img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/cat.jpg" class="js-avatar">
 			</div>
 			<hgroup>
-			  <h1 class="header-author js-header-author">John Doe</h1>
+			  <h1 class="header-author js-header-author">CodeChick</h1>
 			</hgroup>
 			
 			
@@ -167,12 +168,61 @@
 
 <h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>​    物理层考虑的是怎么样才能在连接各种计算机的传输媒体上传输数据比特流，而不是指具体的传输媒体。现有的计算机网络中的硬件设备和传输媒体的种类非常多，物理层的作用正是要尽可能地屏蔽掉这些传输媒体和通信手段的差异，使得数据链路层感觉不到这些差异。</p>
 <h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>​    三个基本问题：封装成帧，透明传输和差错检测</p>
-<p>​    MTU:数据帧中数据部分的长度上限。</p>
-<p>​    以太网MAC帧格式：</p>
+<p>​    <strong>MTU:数据帧中数据部分的长度上限</strong>。</p>
+<p>​    <strong>以太网MAC帧格式：</strong></p>
 <p>​    <img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png" alt="体系结构 图标"></p>
-<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p><img src="/assets/IP.png" alt="体系结构 图标"> </p>
-<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>为什么TCP三次握手，四次挥手：</p>
-<p>​    TCP三次握手如果为两次的话，那么假设有这样一种情况：A向B发送连接请求，但是因为请求报文丢失并没有受到确认，之后A再重新发送请求报文，这次B收到，并返回了确认(即使确认丢了，A也会重新发送请求，这是另一种情况，当这种情况并非真正导致二次握手不行的原因)，A收到确认，建立连接，传递数据，再释放连接。然而还记得之前第一次A发送请求，如果该连接请求报文段是在某些网络结点长时间滞留了，以致延误到连接释放后的某个时间才到达B，那么B会误认为这是A发送的另一次连接，因此B发送确认，新的连接就建立了，但是由于A并没有发送出连接请求，所以A并不会理睬B的确认，B却以为新的连接已经建立了，并一直等待A发来数据，B的资源就被浪费了。如果是三次握手就不会出现这种情况，B之后再接受了A的连接确认之后才真正地建立了连接，也就不会像二次握手一样浪费资源，这也就是所谓的”已失效的连接请求报文段”。                                                           TCP三次握手本来是四次，但是中间同步报文段(SYN),确认报文段(ACK)合成了一个一个报文段，因此就成了三次握手。</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p><strong>IP报文如下:</strong></p>
+<p><img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/IP.png" alt="体系结构 图标"> </p>
+<p>版本: 指IP协议的版本如IPv4协议</p>
+<p>首部长度: 规定首部的最大长度，最大数值15个单位，一个单位对应4个字节，最大长度也就60个字节。</p>
+<p>总长度: 占16位，指的是首部和数据之和的长度，单位为字节，因此数据报的最大长度为65535字节。总长度不超过最大传送单元MTU。</p>
+<p>标识: 占16位是一个计数器，用来产生IP数据报的标识。</p>
+<p>标志: 占3位，通常只有两位在使用   <strong>最低位MF=1表示后面还有分片 MF=0表示最后一个分片。 中间位DF=0才允许分片</strong></p>
+<p>片位移: 指的是分片之后，某片在原分组中的相对位置，<strong>片位移以8个字节为偏移单位</strong></p>
+<p>生存时间: 占8位，指的是数据报在网络中可通过的路由器数的最大值</p>
+<p>协议：占8位，指出该数据报使用何种协议，以便目的主机的IP层将数据部分上传给那个处理过程</p>
+<p>首部检验和：占16 位，只检验数据报的首部，不检验数据部分。这里采用16 位二进制反码求和算法</p>
+<p>源地址和目的地址各占4个字节。</p>
+<p><strong>网际控制报文协议ICMP</strong></p>
+<p>ICMP并不是高层协议，ICMP报文是装在IP数据报中，作为其中的数据部分，是网络层的协议。</p>
+<p>ICMP报允许主机报告差错情况和提供有关异常的情况的报告</p>
+<p><strong>五种差错报文：</strong></p>
+<ol>
+<li>终点不可达: 当路由器或者主机无法交付目的终点时发送终点不可达报文</li>
+<li>源点抑制：当路由器或者主机因为网络拥塞而丢弃时，发送源点抑制报文(不过该报文现在以已经不再使用)</li>
+<li>时间超过：当IP报的TLL=0时，表示生存时间为零，路由器会丢弃该数据报，然后发送时间超过错误报文。</li>
+<li>参数问题：数据报的字段的值不正确。</li>
+<li>改变路由：本次路由不是很好，发送该错误报文让主机下次发生数据报可以选择更好的路由。</li>
+</ol>
+<p><strong>两种查询报文：</strong></p>
+<ol>
+<li>回送请求和回答报文</li>
+<li>时间戳请求和回答报文</li>
+</ol>
+<p>我们常用的PING操作就是用了回送请求和回答报文</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p><strong>UDP</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/UDP.png" alt="体系结构 图标"></p>
+<p>UDP首部只有8个字节。</p>
+<ol>
+<li><p>UDP是无连接的，减少了开销h和发生数据之前的延迟，但因此UDP是不保证可靠交付的。</p>
+</li>
+<li><p>UDP是面向报文的，UDP对应用层交下来的报文，既不合并也不拆分，而是保留这些报文的边界，UDP一次交付一个完整的报文</p>
+</li>
+<li><p>UDP没有网络拥塞控制，不会使主机的发送效率降低</p>
+<p>适用UDP协议的应用主要是一些实时应用，像视频通信，多媒体教学通信等。</p>
+</li>
+</ol>
+<p><strong>TCP：</strong></p>
+<p><img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/TCP.png" alt="体系结构 图标"></p>
+<ol>
+<li>TCP是面向连接的传输层协议</li>
+<li>TCP连接是点对点连接</li>
+<li>TCP提供可靠的交付服务</li>
+<li>TCP提供全双工通信</li>
+</ol>
+<p>为什么TCP三次握手，四次挥手：</p>
+<p>​    TCP三次握手如果为两次的话，那么假设有这样一种情况：A向B发送连接请求，但是因为请求报文丢失并没有受到确认，之后A再重新发送请求报文，这次B收到，并返回了确认(即使确认丢了，A也会重新发送请求，这是另一种情况，当这种情况并非真正导致二次握手不行的原因)，A收到确认，建立连接，传递数据，再释放连接。然而还记得之前第一次A发送请求，如果该连接请求报文段是在某些网络结点长时间滞留了，以致延误到连接释放后的某个时间才到达B，那么B会误认为这是A发送的另一次连接，因此B发送确认，新的连接就建立了，但是由于A并没有发送出连接请求，所以A并不会理睬B的确认，B却以为新的连接已经建立了，并一直等待A发来数据，B的资源就被浪费了。如果是三次握手就不会出现这种情况，B之后再接受了A的连接确认之后才真正地建立了连接，也就不会像二次握手一样浪费资源，这也就是所谓的”已失效的连接请求报文段”。                                                     </p>
+<p>​    TCP三次握手本来是四次，但是中间同步报文段(SYN),确认报文段(ACK)合成了一个一个报文段，因此就成了三次握手。</p>
 <p>​    TCP四次挥手:TCP是全双工模式，主动发送关闭TCP连接的一方A发送释放报文段(FIN)给B，B接收到之后，知道A不会再发送数据给B，但B可能还有数据要传递给A，因此B只发出了确认，告诉A他知道这件事了，TCP连接处于半关闭状态，B还是可以给A发送数据。等之后B发送完了数据，就发送释放报文段(FIN)给A，A收到请求，发出确认给B，之后A就处于TIME-WAIT状态，B收到确认之后，就进入CLOSED状态结束连接。因此综上一共需要四次挥手。</p>
 
       
@@ -182,17 +232,6 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">true</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
@@ -257,18 +296,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/07/12/我的第一篇博客文章/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          我的第一篇博客文章
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/07/11/sort/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">部分排序方法的学习</div>
+    <a href="/2019/07/12/我的第一篇博客文章/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">我的第一篇博客文章</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -287,6 +317,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#物理层"><span class="toc-number">1.</span> <span class="toc-text">物理层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据链路层"><span class="toc-number">2.</span> <span class="toc-text">数据链路层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络层"><span class="toc-number">3.</span> <span class="toc-text">网络层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#传输层"><span class="toc-number">4.</span> <span class="toc-text">传输层</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -331,7 +374,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 John Doe
+    		&copy; 2019 CodeChick
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
