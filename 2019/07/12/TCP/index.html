@@ -8,19 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>关于TCP5层协议的一些基础知识 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="物理层​    物理层考虑的是怎么样才能在连接各种计算机的传输媒体上传输数据比特流，而不是指具体的传输媒体。现有的计算机网络中的硬件设备和传输媒体的种类非常多，物理层的作用正是要尽可能地屏蔽掉这些传输媒体和通信手段的差异，使得数据链路层感觉不到这些差异。 数据链路层​    三个基本问题：封装成帧，透明传输和差错检测 ​    MTU:数据帧中数据部分的长度上限。 ​    以太网MAC帧格式：">
+  <meta name="keywords" content="true">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于TCP5层协议的一些基础知识">
 <meta property="og:url" content="http://yoursite.com/2019/07/12/TCP/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="物理层​    物理层考虑的是怎么样才能在连接各种计算机的传输媒体上传输数据比特流，而不是指具体的传输媒体。现有的计算机网络中的硬件设备和传输媒体的种类非常多，物理层的作用正是要尽可能地屏蔽掉这些传输媒体和通信手段的差异，使得数据链路层感觉不到这些差异。 数据链路层​    三个基本问题：封装成帧，透明传输和差错检测 ​    MTU:数据帧中数据部分的长度上限。 ​    以太网MAC帧格式：">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png">
-<meta property="og:updated_time" content="2019-07-15T09:23:56.419Z">
+<meta property="og:image" content="http://yoursite.com/assets/head.jpg">
+<meta property="og:updated_time" content="2019-07-15T12:37:55.027Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于TCP5层协议的一些基础知识">
-<meta name="twitter:description" content="物理层​    物理层考虑的是怎么样才能在连接各种计算机的传输媒体上传输数据比特流，而不是指具体的传输媒体。现有的计算机网络中的硬件设备和传输媒体的种类非常多，物理层的作用正是要尽可能地屏蔽掉这些传输媒体和通信手段的差异，使得数据链路层感觉不到这些差异。 数据链路层​    三个基本问题：封装成帧，透明传输和差错检测 ​    MTU:数据帧中数据部分的长度上限。 ​    以太网MAC帧格式：">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -50,7 +49,7 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="" class="js-avatar">
+			<img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/cat.jpg" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">John Doe</a></h1>
@@ -98,7 +97,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="" class="js-avatar">
+				<img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/cat.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">John Doe</h1>
@@ -162,11 +161,16 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png" alt="体系结构 图标"></p>
+<a id="more"></a>
+
+
+
 <h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>​    物理层考虑的是怎么样才能在连接各种计算机的传输媒体上传输数据比特流，而不是指具体的传输媒体。现有的计算机网络中的硬件设备和传输媒体的种类非常多，物理层的作用正是要尽可能地屏蔽掉这些传输媒体和通信手段的差异，使得数据链路层感觉不到这些差异。</p>
 <h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>​    三个基本问题：封装成帧，透明传输和差错检测</p>
 <p>​    MTU:数据帧中数据部分的长度上限。</p>
 <p>​    以太网MAC帧格式：</p>
 <p>​    <img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png" alt="体系结构 图标"></p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p><img src="/assets/head.jpg" alt="体系结构 图标"> </p>
 <p>为什么TCP三次握手，四次挥手：</p>
 <p>​    TCP三次握手如果为两次的话，那么假设有这样一种情况：A向B发送连接请求，但是因为请求报文丢失并没有受到确认，之后A再重新发送请求报文，这次B收到，并返回了确认(即使确认丢了，A也会重新发送请求，这是另一种情况，当这种情况并非真正导致二次握手不行的原因)，A收到确认，建立连接，传递数据，再释放连接。然而还记得之前第一次A发送请求，如果该连接请求报文段是在某些网络结点长时间滞留了，以致延误到连接释放后的某个时间才到达B，那么B会误认为这是A发送的另一次连接，因此B发送确认，新的连接就建立了，但是由于A并没有发送出连接请求，所以A并不会理睬B的确认，B却以为新的连接已经建立了，并一直等待A发来数据，B的资源就被浪费了。如果是三次握手就不会出现这种情况，B之后再接受了A的连接确认之后才真正地建立了连接，也就不会像二次握手一样浪费资源，这也就是所谓的”已失效的连接请求报文段”。                                                           TCP三次握手本来是四次，但是中间同步报文段(SYN),确认报文段(ACK)合成了一个一个报文段，因此就成了三次握手。</p>
 <p>​    TCP四次挥手:TCP是全双工模式，主动发送关闭TCP连接的一方A发送释放报文段(FIN)给B，B接收到之后，知道A不会再发送数据给B，但B可能还有数据要传递给A，因此B只发出了确认，告诉A他知道这件事了，TCP连接处于半关闭状态，B还是可以给A发送数据。等之后B发送完了数据，就发送释放报文段(FIN)给A，A收到请求，发出确认给B，之后A就处于TIME-WAIT状态，B收到确认之后，就进入CLOSED状态结束连接。因此综上一共需要四次挥手。</p>
@@ -178,6 +182,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">true</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
