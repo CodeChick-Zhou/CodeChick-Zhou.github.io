@@ -16,8 +16,8 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png">
-<meta property="og:image" content="http://yoursite.com/assets/IP.png">
-<meta property="og:updated_time" content="2019-07-15T12:41:28.224Z">
+<meta property="og:image" content="http://yoursite.com/assets/https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/IP.png">
+<meta property="og:updated_time" content="2019-07-15T12:44:42.971Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于TCP5层协议的一些基础知识">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/457.png">
@@ -170,7 +170,7 @@
 <p>​    MTU:数据帧中数据部分的长度上限。</p>
 <p>​    以太网MAC帧格式：</p>
 <p>​    <img src="https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/MAC.png" alt="体系结构 图标"></p>
-<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p><img src="/assets/IP.png" alt="体系结构 图标"> </p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p><img src="/assets/https://raw.githubusercontent.com/CodeChick-Zhou/CodeChick-Zhou.github.io/master/image/IP.png" alt="体系结构 图标"> </p>
 <p>为什么TCP三次握手，四次挥手：</p>
 <p>​    TCP三次握手如果为两次的话，那么假设有这样一种情况：A向B发送连接请求，但是因为请求报文丢失并没有受到确认，之后A再重新发送请求报文，这次B收到，并返回了确认(即使确认丢了，A也会重新发送请求，这是另一种情况，当这种情况并非真正导致二次握手不行的原因)，A收到确认，建立连接，传递数据，再释放连接。然而还记得之前第一次A发送请求，如果该连接请求报文段是在某些网络结点长时间滞留了，以致延误到连接释放后的某个时间才到达B，那么B会误认为这是A发送的另一次连接，因此B发送确认，新的连接就建立了，但是由于A并没有发送出连接请求，所以A并不会理睬B的确认，B却以为新的连接已经建立了，并一直等待A发来数据，B的资源就被浪费了。如果是三次握手就不会出现这种情况，B之后再接受了A的连接确认之后才真正地建立了连接，也就不会像二次握手一样浪费资源，这也就是所谓的”已失效的连接请求报文段”。                                                           TCP三次握手本来是四次，但是中间同步报文段(SYN),确认报文段(ACK)合成了一个一个报文段，因此就成了三次握手。</p>
 <p>​    TCP四次挥手:TCP是全双工模式，主动发送关闭TCP连接的一方A发送释放报文段(FIN)给B，B接收到之后，知道A不会再发送数据给B，但B可能还有数据要传递给A，因此B只发出了确认，告诉A他知道这件事了，TCP连接处于半关闭状态，B还是可以给A发送数据。等之后B发送完了数据，就发送释放报文段(FIN)给A，A收到请求，发出确认给B，之后A就处于TIME-WAIT状态，B收到确认之后，就进入CLOSED状态结束连接。因此综上一共需要四次挥手。</p>
