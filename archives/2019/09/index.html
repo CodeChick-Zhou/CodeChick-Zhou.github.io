@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>高性能服务器编程(1)-epoll | CodeChick</title>
+  <title>Archives: 2019/9 | CodeChick</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="说到高性能服务器编程,不得不提IO复用,常见的IO复用有三种select,poll和epoll 这三者的区别:">
-<meta name="keywords" content="随笔">
-<meta property="og:type" content="article">
-<meta property="og:title" content="高性能服务器编程(1)-epoll">
-<meta property="og:url" content="http://yoursite.com/2019/08/04/server/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="CodeChick">
+<meta property="og:url" content="http://yoursite.com/archives/2019/09/index.html">
 <meta property="og:site_name" content="CodeChick">
-<meta property="og:description" content="说到高性能服务器编程,不得不提IO复用,常见的IO复用有三种select,poll和epoll 这三者的区别:">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-08T10:53:26.445Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="高性能服务器编程(1)-epoll">
-<meta name="twitter:description" content="说到高性能服务器编程,不得不提IO复用,常见的IO复用有三种select,poll和epoll 这三者的区别:">
+<meta name="twitter:title" content="CodeChick">
   
     <link rel="alternative" href="/atom.xml" title="CodeChick" type="application/atom+xml">
   
@@ -139,53 +134,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-server" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      高性能服务器编程(1)-epoll
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/09/07/设计者模式/" class="archive-article-date">
+  	<time datetime="2019-09-07T10:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/09/07/设计者模式/">设计者模式(一)</a>
     </h1>
   
 
-        
-        <a href="/2019/08/04/server/" class="archive-article-date">
-  	<time datetime="2019-08-04T10:17:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>说到高性能服务器编程,不得不提IO复用,常见的IO复用有三种select,poll和epoll</p>
-<p>这三者的区别:</p>
-<a id="more"></a>
-
-<p>​    select:通过检查存放fd标志位的数据结构(以数组的方式进行存储),进行下一步操作,这样带来的缺点显而易见:<br>​    1.对监听的socket是采用轮询的方式进行扫描,当监听的socket套接字很多的话,每次select都要遍历整个数组,效率可见是很低的.时间复杂度为O(N)<br>​    2.每次select都需要将fd数组在用户空间和内核空间进行copy,造成一定量的资源浪费,开销很大.<br>​    3.select监听的fd数量被限制.</p>
-<p>​    poll:与select不同的是采用链表的方式进行存储,因此监听的fd数量没有限制.但是依旧采用轮询的方式进行扫描,效率并无提高.时间复杂度为O(N)</p>
-<p>​    epoll:epoll模式下,内核维护了一个红黑树结构,用于存放epoll挂载的socket套接字及其相关信息(epoll_event结构),用户只需要将监听的socket注册到epoll上,内核就会自动将该socket套接字挂载到红黑树上,如果有消息可读,内核会自动将唤醒的套接字返回给用户,与poll和select不同,减小了用户空间到内核空间复制的开销,由于使用了红黑树机制时间复杂度为O(1).所以优点如下:<br>​    1.没有最大的监听socket数的限制.<br>​    2.效率比poll和selcet提高,没有采用轮询的方式,不会随着监听socket数量的增加而效率下降,epoll只关心活跃的连接,不像poll和select”无脑”遍历<br>​    3.内核空间和用户空间复制开销降低epoll模型很好的客服了select和poll的缺点…</p>
-<p>说到这里是不是觉得epoll就一定比select和poll好,其实不然…<br>    如果面对的是连接数小,活动频繁的模式下,select和poll的性能可能会比epoll的好,因为前两者数据结构比较简单,epoll在活动频繁的情况,会大量使用函数回调,开销可能会比较大,然而在高并发的连接数多的情况,epoll的优势就大大体现出来了,所以应该看情况,使用相应的模型.</p>
-<p>以下是一个简单epoll模型:</p>
-<p>服务端编程</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num,clientfd,client_len;</span><br><span class="line">	<span class="keyword">int</span> epoll_fd = epoll_create(<span class="number">100</span>);</span><br><span class="line">	<span class="keyword">int</span> listenfd = socket(AF_INET,SOCK_STREAM,<span class="number">0</span>);</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">events</span>[100],<span class="title">ev</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">serv_addr</span>,<span class="title">client_addr</span>;</span></span><br><span class="line"></span><br><span class="line">serv_addr.sin_family = AF_INET;</span><br><span class="line">serv_addr.sin_port = htons(<span class="number">9999</span>);</span><br><span class="line">serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);</span><br><span class="line"></span><br><span class="line">bind(listenfd,(struct sockaddr*)&amp;serv_addr,<span class="keyword">sizeof</span>(struct sockaddr_in));	</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> opt = <span class="number">1</span>;</span><br><span class="line">setsockopt(listenfd,SOL_SOCKET,SO_REUSEADDR,&amp;opt,<span class="keyword">sizeof</span>(opt));	<span class="comment">//端口复用</span></span><br><span class="line"></span><br><span class="line">listen(listenfd,<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> buf[<span class="number">10</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">ev.events = EPOLLIN|EPOLLET;</span><br><span class="line">ev.data.fd = listenfd;</span><br><span class="line">epoll_ctl(epoll_fd,EPOLL_CTL_ADD,listenfd,&amp;ev);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"epoll_wait.......\n"</span>);</span><br><span class="line">	num = epoll_wait(epoll_fd,events,<span class="number">100</span>,<span class="number">-1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; num; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;num&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">if</span>(events[i].data.fd==listenfd)</span><br><span class="line">		&#123;</span><br><span class="line">			clientfd = accept(listenfd,(sockaddr *)&amp;client_addr,(<span class="keyword">socklen_t</span>*)&amp;client_len);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"listen accept:%d\n"</span>,clientfd);			</span><br><span class="line">			ev.events = EPOLLIN|EPOLLET;	<span class="comment">//epoll默认为LT，此处设置为ET</span></span><br><span class="line">			ev.data.fd = clientfd;</span><br><span class="line">			<span class="comment">//int flags;</span></span><br><span class="line">			<span class="comment">//flags |= O_NONBLOCK;	//此处可以设置阻塞和非阻塞套接字</span></span><br><span class="line">			fcntl(clientfd,F_SETFL,O_NONBLOCK);</span><br><span class="line">			epoll_ctl(epoll_fd,EPOLL_CTL_ADD,clientfd,&amp;ev);</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(events[i].events &amp; EPOLLIN)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"reading:...\n"</span>);</span><br><span class="line">			<span class="keyword">int</span> sockfd = events[i].data.fd;</span><br><span class="line">			<span class="keyword">int</span> n = <span class="number">-1</span>;</span><br><span class="line">			<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				n = read(sockfd,buf,<span class="number">10</span>);</span><br><span class="line">				<span class="keyword">if</span>(n==<span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"n:%d close:%d\n"</span>,n,sockfd);</span><br><span class="line">					epoll_ctl(epoll_fd,EPOLL_CTL_DEL,sockfd,&amp;events[i]);</span><br><span class="line">					close(sockfd);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;<span class="keyword">else</span> <span class="keyword">if</span>(n == <span class="number">-1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"n:%d once over\n"</span>,n);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;<span class="keyword">else</span> <span class="keyword">if</span>(n&gt;<span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"n:%d %s\n"</span>,n,buf);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>客户端编程</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sockfd, connfd;    </span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">100</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    sockfd = socket(AF_INET,SOCK_STREAM,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(sockfd==<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">            perror(<span class="string">"sock socket"</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">server</span>;</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;server,<span class="number">0</span>,<span class="keyword">sizeof</span>(struct sockaddr_in));</span><br><span class="line">    server.sin_family = AF_INET;</span><br><span class="line">    server.sin_port = htons(<span class="number">9999</span>);</span><br><span class="line">    server.sin_addr.s_addr = inet_addr(<span class="string">"127.0.0.1"</span>);</span><br><span class="line"></span><br><span class="line">    connfd = connect(sockfd,(struct sockaddr*)&amp;server,<span class="keyword">sizeof</span>(server));</span><br><span class="line">    <span class="keyword">if</span>(connfd==<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">            perror(<span class="string">"sock connect"</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;connfd&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"请输入:...\n"</span>);</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">"%s"</span>,buf);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%s   len:%d\n"</span>,buf,<span class="built_in">strlen</span>(buf));</span><br><span class="line">            write(sockfd,buf,<span class="built_in">strlen</span>(buf));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>值得一提的是:</p>
-<p>​    关于epoll模型的两种模式：(边缘触发)ET,（水平触发）LT。 </p>
-<p>​    ET模式下，有事件触发有且只会通知epoll_wait一次，之后不再通知，除非有新的事件。ET模式下必须使用非阻塞，并且必须使用循环读取直到缓冲区没有数据。原因：使用阻塞模式，如果本次没有读取完缓冲区的数据，ET只通知一次，那么将会影响下一次事件，因此需要使用循环来读取完整的一个事件，但是如果加入循环的话，即使将缓冲区数据读取完了，还是会出现阻塞，影响另一个客户端的连接，因此ET模式必须使用非阻塞并且循环的方式读取完一个事件。</p>
-<p>​    LT模式就不需要这么多要求了，LT模式下，只要缓冲区有数据，就会一直发送通知，因此该模式下，无需进行循环读取完整的事件，反正下一次epoll_wait还是可以返回，因而也不必要使用非阻塞，阻塞和非阻塞效果是一样的。但还是建议非阻塞。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -197,128 +175,19 @@
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/08/04/server/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/09/07/设计者模式/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          设计者模式(一)
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/08/04/split/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">C++ string split实现</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    目录，不存在的…
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -341,8 +210,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
